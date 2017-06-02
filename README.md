@@ -3,3 +3,9 @@
 # faker-command
 
 A CLI tool for using [fzaninotto/Faker](https://github.com/fzaninotto/Faker)
+
+## Usage
+
+```
+./bin/fake fake name
+```
