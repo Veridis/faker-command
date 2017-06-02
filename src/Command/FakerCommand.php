@@ -4,6 +4,7 @@ namespace Command;
 
 use Faker\Factory;
 use Faker\Generator;
+use Helper\ListHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,11 +22,12 @@ class FakerCommand extends Command
         $this
             ->setName('fake')
             ->setDescription('Simple CLI implementation of Faker library')
-            ->addArgument('property', InputArgument::REQUIRED)
+            ->addArgument('property', InputArgument::OPTIONAL, 'The Faker formatter property')
             ->addArgument('arguments', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Arguments of the faker property. Separated by spaces')
             ->addOption('seed', null, InputOption::VALUE_OPTIONAL, 'Seed. If provided, the result will be the same over time.', null)
             ->addOption('n', null, InputOption::VALUE_OPTIONAL, 'Number of result', 1)
             ->addOption('local', null, InputOption::VALUE_OPTIONAL, 'Local of the faker Factory', Factory::DEFAULT_LOCALE)
+            ->addOption('list', null, InputOption::VALUE_OPTIONAL, 'Print all Faker\'s formatters.', false)
         ;
     }
 
@@ -34,6 +36,21 @@ class FakerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $showList = $input->getOption('list');
+        if (false !== $showList) {
+            if (null === $showList) {
+                $this->printFormatters($output);
+
+                return;
+            }
+
+            $output->writeln(sprintf('Listing %s generators :', $showList));
+            $table = ListHelper::listGenerators($showList, $output);
+            $table->render();
+
+            return;
+        }
+
         $faker = Factory::create($input->getOption('local'));
         $property = $input->getArgument('property');
         $arguments = $input->getArgument('arguments');
@@ -66,5 +83,15 @@ class FakerCommand extends Command
      */
     private function callFakerFunction(Generator $faker, $property, array $arguments = array()) {
         return call_user_func_array(array($faker, $property), $arguments);
+    }
+
+    /**
+     * Print Faker's formatters
+     */
+    private function printFormatters(OutputInterface $output)
+    {
+        $table = new Table($output);
+        $table->setRows(ListHelper::$formatters);
+        $table->render();
     }
 }
