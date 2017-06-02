@@ -69,7 +69,7 @@ class FakerCommand extends Command
         $table = new Table($output);
         $table->setHeaders(['#', 'data']);
         for ($i = 0; $i < $n; $i++) {
-            $table->addRow([$i+1, $this->callFakerFunction($faker, $property, $arguments)]);
+            $table->addRow([$i + 1, $this->callFakerFunction($faker, $property, $arguments)]);
         }
 
         $table->render();
@@ -79,14 +79,16 @@ class FakerCommand extends Command
      * @param Generator $faker
      * @param $property
      * @param array $arguments
+     *
      * @return mixed
      */
-    private function callFakerFunction(Generator $faker, $property, array $arguments = array()) {
+    private function callFakerFunction(Generator $faker, $property, array $arguments = array())
+    {
         return call_user_func_array(array($faker, $property), $arguments);
     }
 
     /**
-     * Print Faker's formatters
+     * Print Faker's formatters.
      */
     private function printFormatters(OutputInterface $output)
     {

@@ -2,7 +2,6 @@
 
 namespace Helper;
 
-
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,16 +33,18 @@ class ListHelper
     /**
      * @param $formatter
      * @param OutputInterface $output
+     *
      * @return Table
      */
-    public static function listGenerators($formatter, OutputInterface $output) {
+    public static function listGenerators($formatter, OutputInterface $output)
+    {
         if (!in_array([$formatter], self::$formatters)) {
             throw new InvalidArgumentException('Invalid formatter. List all formatters with --list option');
         }
 
         $table = new Table($output);
         $table->setHeaders(['Methods', 'Examples']);
-        switch(strtolower($formatter)) {
+        switch (strtolower($formatter)) {
             case 'address':
                 $table->setRows(self::address());
                 break;
